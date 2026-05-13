@@ -1,0 +1,27 @@
+curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+unzip awscliv2.zip
+sudo ./aws/install
+ll -a
+vim .bashrc
+# add the below line to the vim bashrc file
+export PATH=$PATH:/usr/local/bin/
+source .bashrc
+curl -Lo kops https://github.com/kubernetes/kops/releases/download/$(curl -s https://api.github.com/repos/kubernetes/kops/releases/latest | grep tag_name | cut -d '"' -f 4)/kops-linux-amd64
+chmod +x kops
+sudo mv kops /usr/local/bin/kops
+chmod +x kubectl
+mv kubectl /usr/local/bin/
+kubectl version
+#attach the iam role to the instance
+aws s3 ls
+aws s3 mb s3://vindu123.vuta.k8s  #bucket name should be unique
+aws s3 ls
+#enable the versining of the s3 bucker you created
+export KOPS_STATE_STORE=s3://vindu123.vuta.k8s  #copy the same bucket name you created now
+kops create cluster --name=vindu.k8s.local \
+--zones=ap-south-1a,ap-south-1b \
+--control-plane-size=t3.medium \
+--control-plane-count=1 \
+--node-size=t3.micro \
+--node-count=2 \
+--yes
