@@ -14,6 +14,22 @@ kubectl config use-context my-context
 Role and RoleBindinf
 ---------------------:
 
+
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: dev-role
+  namespace: dev
+
+rules:
+  - apiGroups: ["*"]
+    resources: ["pods","deployments"]
+    verbs: ["get","list","create"]
+  - apiGroups: ["*"]
+    resources: ["services"]
+    verbs: ["get","list","create","delete"]
+
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
