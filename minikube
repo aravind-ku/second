@@ -1,67 +1,137 @@
-# Minikube Setup Commands for Ubuntu Server 26.04 LTS on AWS EC2
+Amazon Linux 2023 EC2 — Minikube Setup (using ec2-user)
+# Switch to ec2-user
+sudo su - ec2-user
+
+# Update packages
+sudo yum update -y
+
+# Install Docker
+sudo yum install -y docker
+
+# Enable and Start Docker
+sudo systemctl enable docker
+sudo systemctl start docker
+
+# Add ec2-user to docker group
+sudo usermod -aG docker ec2-user
+
+# Apply docker group changes
+newgrp docker
+
+# Verify Docker
+docker --version
+docker ps
+
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+
+chmod +x kubectl
+
+sudo mv kubectl /usr/local/bin/
+
+# Verify kubectl
+kubectl version --client
+
+# Install Minikube
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# Verify Minikube
+minikube version
+
+# Start Minikube
+minikube start --driver=docker
+
+# Verify Cluster
+kubectl get nodes
+
+# Check Minikube Status
+minikube status
+
+
+---------------------------------------------------------------------------------------------------------------
+Ubuntu EC2 — Minikube Setup (using ubuntu user)
+
+# Switch to ubuntu user
+sudo su - ubuntu
+
+# Update packages
 sudo apt update -y && sudo apt upgrade -y
+
+# Install Required Packages
 sudo apt install -y curl wget apt-transport-https ca-certificates software-properties-common conntrack
+
+# Install Docker
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
 sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
+
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
 https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
 sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
 sudo apt update -y
-sudo apt install -y docker-ce docker-ce-cli containerd.io
-sudo systemctl enable docker
-sudo systemctl start docker
-docker --version
-curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
-sudo install minikube-linux-amd64 /usr/local/bin/minikube
-minikube version
-minikube start --driver=docker
-kubectl get nodes
 
-
------------------------------------------------step by step ----------------------------------------------
-
-sudo apt update -y && sudo apt upgrade -y
-// Install Required Packages//
-sudo apt install -y curl wget apt-transport-https ca-certificates software-properties-common conntrack
-// Install Docker //
-curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
-sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
-curl -LO "https://dl.k8s.io/release/$(curl -L -s \
-https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
-chmod +x kubectl
-sudo mv kubectl /usr/local/bin/
-kubectl version --client
-
-// Add Docker Repository //
-echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
-https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
-sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-
-// Install Docker Engine //
-sudo apt update -y
 sudo apt install -y docker-ce docker-ce-cli containerd.io
 
-// Start and Enable Docker //
+# Enable and Start Docker
 sudo systemctl enable docker
 sudo systemctl start docker
+
+# Add ubuntu user to docker group
+sudo usermod -aG docker ubuntu
+
+# Apply docker group changes
+newgrp docker
+
+# Verify Docker
 docker --version
-// 
+docker ps
 
+# Install kubectl
+curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 
-
-//Install kubectl//
-curl -LO "https://dl.k8s.io/release/$(curl -L -s \
-https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
 chmod +x kubectl
+
 sudo mv kubectl /usr/local/bin/
+
+# Verify kubectl
 kubectl version --client
 
-// Install Minikube //
+# Install Minikube
 curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+
 sudo install minikube-linux-amd64 /usr/local/bin/minikube
+
+# Verify Minikube
 minikube version
+
+# Start Minikube
 minikube start --driver=docker
+
+# Verify Cluster
 kubectl get nodes
-minikube stop
-minikube dashboard
-minikube delete
+
+# Check Minikube Status
+minikube status
+
+# Check Pods
+kubectl get pods -A
+
+------------------------------------------------------------
+
+Important
+
+Do NOT run:
+
+minikube start --driver=docker
+
+as root.
+
+Run it only as:
+
+ec2-user on Amazon Linux
+ubuntu on Ubuntu EC2
+
+# Check Pods
+kubectl get pods -A
