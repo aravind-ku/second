@@ -1,0 +1,67 @@
+# Minikube Setup Commands for Ubuntu Server 26.04 LTS on AWS EC2
+sudo apt update -y && sudo apt upgrade -y
+sudo apt install -y curl wget apt-transport-https ca-certificates software-properties-common conntrack
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+sudo apt update -y
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+sudo systemctl enable docker
+sudo systemctl start docker
+docker --version
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+minikube version
+minikube start --driver=docker
+kubectl get nodes
+
+
+-----------------------------------------------step by step ----------------------------------------------
+
+sudo apt update -y && sudo apt upgrade -y
+// Install Required Packages//
+sudo apt install -y curl wget apt-transport-https ca-certificates software-properties-common conntrack
+// Install Docker //
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | \
+sudo gpg --dearmor -o /usr/share/keyrings/docker.gpg
+curl -LO "https://dl.k8s.io/release/$(curl -L -s \
+https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+kubectl version --client
+
+// Add Docker Repository //
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker.gpg] \
+https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | \
+sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+// Install Docker Engine //
+sudo apt update -y
+sudo apt install -y docker-ce docker-ce-cli containerd.io
+
+// Start and Enable Docker //
+sudo systemctl enable docker
+sudo systemctl start docker
+docker --version
+// 
+
+
+
+//Install kubectl//
+curl -LO "https://dl.k8s.io/release/$(curl -L -s \
+https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+chmod +x kubectl
+sudo mv kubectl /usr/local/bin/
+kubectl version --client
+
+// Install Minikube //
+curl -LO https://storage.googleapis.com/minikube/releases/latest/minikube-linux-amd64
+sudo install minikube-linux-amd64 /usr/local/bin/minikube
+minikube version
+minikube start --driver=docker
+kubectl get nodes
+minikube stop
+minikube dashboard
+minikube delete
