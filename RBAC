@@ -6,6 +6,30 @@ openssl x509 -req -in vindu.csr \
 -CAcreateserial \
 -out vindu.crt \
 -days 500
+-------------------------Now create the Kubernetes user vindu by adding credentials to kubeconfig---------
+kubectl config set-credentials vindu \
+--client-certificate=vindu.crt \
+--client-key=vindu.key
+----------------------Create a context for the user:--------------------------
+kubectl config set-context vindu-context \
+--cluster=minikube \
+--user=vindu
+
+kubectl config use-context vindu-context
+
+kubectl config view
+       (or)
+kubectl auth whoami
+
+-------You can also test permissions:-------
+kubectl get pods
+----------If RBAC is enabled,-------------
+kubectl create clusterrolebinding vindu-admin \
+--clusterrole=cluster-admin \
+--user=vindu
+
+------------------Then test again:----------------
+kubectl get nodes
 
 kubectl config set-context my-context --cluster=minikube --user=vindu
 kubectl config view
