@@ -17,12 +17,15 @@ kubectl version
 aws s3 ls
 aws s3 mb s3://vindu123.vuta.k8s  #bucket name should be unique
 aws s3 ls
+export KOPS_STATE_STORE=s3://vindu123.vuta.k8s
 #enable the versining of the s3 bucker you created
 export KOPS_STATE_STORE=s3://vindu123.vuta.k8s  #copy the same bucket name you created now
 kops create cluster --name=vindu.k8s.local \
 --zones=ap-south-1a,ap-south-1b \
 --control-plane-size=t3.medium \
 --control-plane-count=1 \
+--control-plane-volume-size=20 \
 --node-size=t3.micro \
 --node-count=2 \
+--node-volume-size=20 \
 --yes
