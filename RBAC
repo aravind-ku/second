@@ -1,5 +1,5 @@
 openssl genrsa -out vindu.key 2048
-openssl req -new -key vindu.key -out vindu,csr -subj "/CN=vindu/O=group1"
+openssl req -new -key vindu.key -out vindu.csr -subj "/CN=vindu/O=group1"
 openssl x509 -req -in vindu.csr \
 -CA ~/.minikube/ca.crt \
 -CAkey ~/.minikube/ca.key \
