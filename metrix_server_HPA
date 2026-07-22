@@ -1,0 +1,72 @@
+kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+kubectl get pods -n kube-system
+
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: myhpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: dp
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 30
+...
+---------------------------------------------------
+Deployment
+============
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dp
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: rapido
+  template:
+    metadata:
+      labels:
+        app: rapido
+    spec:
+      containers:
+        - name: cont
+          image: aravind53/repos
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: "100m"
+            limits:
+              cpu: "500m"
+
+...
+------------------------------------------------------------
+service:
+==========
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: svc1
+
+spec:
+  type: LoadBalancer
+  selector:
+    app: rapido
+  ports:
+    - port: 80
+      targetPort: 80
+...
