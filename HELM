@@ -27,3 +27,31 @@ export ARGO_PWD='kubectl -n argocd get secret argocd-initial-admin-secret -o jso
 echo $ARGO_PWD
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
 The above command to provide password to access argo cd
+
+
+
+------------------------------------------------------------------------------------------------------------
+
+IN KOPS EXPORT NODES FOR NODEPORT AND LOADBALANCER
+
+kubectl patch svc my-prometheus-server \
+  -n default \
+  -p '{"spec":{"type":"LoadBalancer"}}'
+kubectl get svc my-prometheus-server -n default
+
+kubectl patch svc my-prometheus-server \
+  -n default \
+  -p '{"spec":{"type":"NodePort"}}'
+kubectl get svc my-prometheus-server -n default
+
+
+----------OTHER TYPE-----------------
+Reinstall/Upgrade the Helm chart with the desired service type
+
+helm upgrade my-prometheus prometheus-community/prometheus \
+  --namespace default \
+  --set server.service.type=LoadBalancer
+
+helm upgrade my-prometheus prometheus-community/prometheus \
+  --namespace default \
+  --set server.service.type=NodePort
