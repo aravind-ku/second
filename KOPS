@@ -29,3 +29,14 @@ kops create cluster --name=vindu.k8s.local \
 --node-count=2 \
 --node-volume-size=20 \
 --yes
+
+----------------------------------------------------------------------------------
+
+--zones=us-east-1a,us-east-1b \
+--control-plane-size=t3.small \
+--control-plane-count=1 \
+--control-plane-volume-size=50 \
+--node-size=t3.micro \
+--node-count=2 \
+--node-volume-size=30 \
+--yes
