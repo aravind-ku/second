@@ -31,7 +31,7 @@ kops create cluster --name=vindu.k8s.local \
 --yes
 
 ----------------------------------------------------------------------------------
-
+kops create cluster --name=vindu.k8s.local \
 --zones=us-east-1a,us-east-1b \
 --control-plane-size=t3.small \
 --control-plane-count=1 \
